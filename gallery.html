@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ezel — Galeri</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="pages.css">
+</head>
+
+<body>
+
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+    <div class="noise"></div>
+
+    <div class="wrap">
+
+        <header class="site-header">
+            <a href="home.html" class="brand">EZEL</a>
+            <nav class="nav">
+                <a href="home.html">Ana Sayfa</a>
+                <a href="gallery.html" aria-current="page">Galeri</a>
+                <a href="letter.html">Mektup</a>
+                <a href="timeline.html">Anılar</a>
+                <a href="index.html">Çıkış</a>
+            </nav>
+        </header>
+
+        <h1 class="page-title">Galeri</h1>
+        <p class="page-lead">Büyütmek için bir kareye dokun.</p>
+        <div class="rule"></div>
+
+        <div class="gallery" id="gallery">
+            <figure><img src="indir.png" alt="Kare 1" loading="lazy"></figure>
+            <figure><img src="b43dcc2d-7b3a-4c9d-ae62-b070e0fa3cee.jpg" alt="Kare 2" loading="lazy"></figure>
+            <figure><img src="8f82f51c1a4fe686cad435c86f882476.jpg" alt="Kare 3" loading="lazy"></figure>
+            <figure><img src="photo-1516037239867-ff3e7ad0d607.avif" alt="Kare 4" loading="lazy"></figure>
+        </div>
+
+    </div>
+
+    <div class="lightbox" id="lightbox" hidden>
+        <img src="" alt="" id="lightboxImg">
+    </div>
+
+    <footer class="site-footer">PRIVATE • 2026</footer>
+
+    <script>
+        const gallery = document.getElementById("gallery");
+        const lightbox = document.getElementById("lightbox");
+        const lightboxImg = document.getElementById("lightboxImg");
+
+        gallery.addEventListener("click", (e) => {
+            const img = e.target.closest("img");
+            if (!img) return;
+            lightboxImg.src = img.src;
+            lightboxImg.alt = img.alt;
+            lightbox.hidden = false;
+        });
+
+        function closeLightbox() {
+            lightbox.hidden = true;
+            lightboxImg.src = "";
+        }
+
+        lightbox.addEventListener("click", closeLightbox);
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") closeLightbox();
+        });
+    </script>
+
+</body>
+</html>

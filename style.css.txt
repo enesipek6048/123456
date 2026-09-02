@@ -1,0 +1,573 @@
+/* =========================================
+   RESET
+========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    background: #080708;
+    color: #f4eef0;
+    font-family: "Inter", sans-serif;
+    overflow: hidden;
+}
+
+
+/* =========================================
+   LOGIN PAGE
+========================================= */
+
+.login-page {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+
+    overflow: hidden;
+}
+
+
+/* =========================================
+   AMBIENT LIGHT
+========================================= */
+
+.ambient {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    pointer-events: none;
+}
+
+.ambient-one {
+    width: 500px;
+    height: 500px;
+
+    background: rgba(130, 55, 78, 0.12);
+
+    top: -250px;
+    left: -150px;
+}
+
+.ambient-two {
+    width: 450px;
+    height: 450px;
+
+    background: rgba(105, 48, 68, 0.10);
+
+    right: -200px;
+    bottom: -250px;
+}
+
+
+/* =========================================
+   NOISE
+========================================= */
+
+.noise {
+    position: fixed;
+    inset: 0;
+
+    pointer-events: none;
+
+    opacity: 0.035;
+
+    z-index: 5;
+
+    background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+}
+
+
+/* =========================================
+   LOGIN CARD
+========================================= */
+
+.login-card {
+    position: relative;
+
+    width: min(430px, 100%);
+
+    padding: 58px 48px 42px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(25, 21, 25, 0.95),
+            rgba(13, 11, 14, 0.97)
+        );
+
+    border: 1px solid rgba(231, 200, 209, 0.10);
+
+    box-shadow:
+        0 40px 100px rgba(0, 0, 0, 0.55),
+        inset 0 1px 0 rgba(255, 255, 255, 0.025);
+
+    backdrop-filter: blur(20px);
+
+    animation: cardAppear 1s ease forwards;
+
+    z-index: 2;
+}
+
+
+/* Kartın üst çizgisi */
+
+.login-card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 80px;
+    height: 1px;
+
+    background: #c58a9b;
+
+    box-shadow: 0 0 20px rgba(197, 138, 155, 0.5);
+}
+
+
+/* =========================================
+   LOGO
+========================================= */
+
+.logo {
+    text-align: center;
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 48px;
+    font-weight: 500;
+
+    letter-spacing: 0.25em;
+
+    margin-left: 0.25em;
+
+    color: #f4eef0;
+}
+
+
+/* =========================================
+   LINE
+========================================= */
+
+.line {
+    width: 35px;
+    height: 1px;
+
+    background: rgba(197, 138, 155, 0.65);
+
+    margin: 17px auto 15px;
+}
+
+
+/* =========================================
+   TEXT
+========================================= */
+
+.subtitle {
+    text-align: center;
+
+    font-size: 10px;
+    letter-spacing: 0.38em;
+
+    color: #c58a9b;
+
+    margin-left: 0.38em;
+}
+
+.description {
+    text-align: center;
+
+    font-size: 12px;
+
+    color: #777078;
+
+    margin-top: 12px;
+    margin-bottom: 38px;
+}
+
+
+/* =========================================
+   INPUT
+========================================= */
+
+.input-group {
+    margin-bottom: 22px;
+}
+
+.input-group label {
+    display: block;
+
+    font-size: 10px;
+
+    letter-spacing: 0.14em;
+
+    text-transform: uppercase;
+
+    color: #8d858b;
+
+    margin-bottom: 9px;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-wrapper input {
+    width: 100%;
+
+    height: 54px;
+
+    padding: 0 48px 0 17px;
+
+    background: rgba(255, 255, 255, 0.025);
+
+    border: 1px solid rgba(255, 255, 255, 0.09);
+
+    outline: none;
+
+    color: #f4eef0;
+
+    font-family: "Inter", sans-serif;
+
+    font-size: 13px;
+
+    transition:
+        border-color 0.3s ease,
+        background 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.input-wrapper input::placeholder {
+    color: #4f494e;
+}
+
+.input-wrapper input:focus {
+    background: rgba(197, 138, 155, 0.035);
+
+    border-color: rgba(197, 138, 155, 0.55);
+
+    box-shadow:
+        0 0 0 3px rgba(197, 138, 155, 0.045);
+}
+
+
+/* =========================================
+   PASSWORD TOGGLE
+========================================= */
+
+.password-toggle {
+    position: absolute;
+
+    right: 16px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    border: none;
+
+    background: transparent;
+
+    color: #625b61;
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    transition: color 0.25s ease;
+}
+
+.password-toggle:hover {
+    color: #c58a9b;
+}
+
+
+/* =========================================
+   LOGIN BUTTON
+========================================= */
+
+.login-button {
+    width: 100%;
+    height: 55px;
+
+    margin-top: 8px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 13px;
+
+    border: 1px solid rgba(197, 138, 155, 0.35);
+
+    background: rgba(197, 138, 155, 0.08);
+
+    color: #e7c8d1;
+
+    font-family: "Inter", sans-serif;
+
+    font-size: 10px;
+
+    letter-spacing: 0.23em;
+
+    cursor: pointer;
+
+    transition:
+        background 0.3s ease,
+        border-color 0.3s ease,
+        transform 0.2s ease,
+        box-shadow 0.3s ease;
+}
+
+.login-button .arrow {
+    font-size: 15px;
+
+    letter-spacing: 0;
+
+    transition: transform 0.3s ease;
+}
+
+.login-button:hover {
+    background: rgba(197, 138, 155, 0.16);
+
+    border-color: rgba(197, 138, 155, 0.65);
+
+    box-shadow:
+        0 10px 35px rgba(120, 60, 80, 0.15);
+}
+
+.login-button:hover .arrow {
+    transform: translateX(5px);
+}
+
+.login-button:active {
+    transform: scale(0.985);
+}
+
+
+/* =========================================
+   ERROR
+========================================= */
+
+.error-message {
+    display: none;
+
+    text-align: center;
+
+    font-size: 11px;
+
+    color: #c58a9b;
+
+    margin: -5px 0 15px;
+}
+
+.error-message.show {
+    display: block;
+
+    animation: shake 0.35s ease;
+}
+
+
+/* =========================================
+   BOTTOM MESSAGE
+========================================= */
+
+.bottom-message {
+    text-align: center;
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 15px;
+
+    font-style: italic;
+
+    color: #625b61;
+
+    margin-top: 30px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================
+   COPYRIGHT
+========================================= */
+
+.copyright {
+    text-align: center;
+
+    font-size: 8px;
+
+    letter-spacing: 0.25em;
+
+    color: #393438;
+
+    margin-top: 30px;
+}
+
+
+/* =========================================
+   ZAKKUM DECORATION
+========================================= */
+
+.flower-decoration {
+    position: absolute;
+
+    top: 23px;
+    right: 25px;
+
+    width: 42px;
+    height: 42px;
+
+    opacity: 0.25;
+
+    transform: rotate(-15deg);
+
+    pointer-events: none;
+}
+
+.flower-decoration span {
+    position: absolute;
+
+    width: 10px;
+    height: 22px;
+
+    border: 1px solid #c58a9b;
+
+    border-radius: 100% 0 100% 0;
+
+    transform-origin: bottom center;
+}
+
+.flower-decoration span:nth-child(1) {
+    left: 16px;
+    top: 2px;
+
+    transform: rotate(0deg);
+}
+
+.flower-decoration span:nth-child(2) {
+    left: 18px;
+    top: 10px;
+
+    transform: rotate(72deg);
+}
+
+.flower-decoration span:nth-child(3) {
+    left: 12px;
+    top: 16px;
+
+    transform: rotate(144deg);
+}
+
+.flower-decoration span:nth-child(4) {
+    left: 6px;
+    top: 11px;
+
+    transform: rotate(216deg);
+}
+
+.flower-decoration span:nth-child(5) {
+    left: 9px;
+    top: 3px;
+
+    transform: rotate(288deg);
+}
+
+
+/* =========================================
+   ANIMATIONS
+========================================= */
+
+@keyframes cardAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes shake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+    .login-page {
+        padding: 20px;
+    }
+
+    .login-card {
+        padding: 48px 28px 34px;
+    }
+
+    .logo {
+        font-size: 42px;
+    }
+
+    .description {
+        margin-bottom: 32px;
+    }
+
+    .ambient-one {
+        width: 300px;
+        height: 300px;
+    }
+
+    .ambient-two {
+        width: 280px;
+        height: 280px;
+    }
+}
+
+
+@media (max-width: 360px) {
+
+    .login-card {
+        padding-left: 22px;
+        padding-right: 22px;
+    }
+
+    .logo {
+        font-size: 36px;
+    }
+}

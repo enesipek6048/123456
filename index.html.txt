@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ezel — Private Space</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="login-page">
+
+        <!-- Arka plan ışıkları -->
+        <div class="ambient ambient-one"></div>
+        <div class="ambient ambient-two"></div>
+
+        <!-- Noise -->
+        <div class="noise"></div>
+
+        <!-- Login Card -->
+        <section class="login-card">
+
+            <!-- Zakkum çizimi -->
+            <div class="flower-decoration">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="logo">
+                EZEL
+            </div>
+
+            <div class="line"></div>
+
+            <p class="subtitle">PRIVATE SPACE</p>
+
+            <p class="description">
+                Bu alan sadece sana ait.
+            </p>
+
+            <form id="loginForm">
+
+                <!-- Kullanıcı adı -->
+                <div class="input-group">
+                    <label for="username">Kullanıcı adı</label>
+
+                    <div class="input-wrapper">
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            autocomplete="username"
+                            placeholder="Kullanıcı adını gir"
+                        >
+                    </div>
+                </div>
+
+                <!-- Şifre -->
+                <div class="input-group">
+                    <label for="password">Şifre</label>
+
+                    <div class="input-wrapper">
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            autocomplete="current-password"
+                            placeholder="Şifreni gir"
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            id="passwordToggle"
+                            aria-label="Şifreyi göster"
+                        >
+                            ◉
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Hata mesajı -->
+                <p class="error-message" id="errorMessage">
+                    Kullanıcı adı veya şifre yanlış.
+                </p>
+
+                <!-- Giriş -->
+                <button type="submit" class="login-button" id="loginButton">
+                    <span>GİRİŞ YAP</span>
+                    <span class="arrow">→</span>
+                </button>
+
+            </form>
+
+            <p class="bottom-message">
+                Bazı şeyler sadece doğru kişi için açılır.
+            </p>
+
+            <div class="copyright">
+                PRIVATE • 2026
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
