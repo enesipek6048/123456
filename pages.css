@@ -505,6 +505,99 @@ body.no-scroll {
 
 
 /* =========================================
+   BENTO GRID
+   (framer-motion "FUIBentoGridDark" bileşeninin
+    bağımlılıksız, açık temaya uyarlanmış hâli)
+========================================= */
+
+.bento {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+    margin-top: 34px;
+}
+
+.bento-card {
+    grid-column: span 6;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    background: #f0ebed;
+    text-decoration: none;
+    color: inherit;
+    min-height: 300px;
+    transition: border-color 0.3s ease, transform 0.25s ease, box-shadow 0.3s ease;
+}
+
+.bento-card:hover {
+    border-color: rgba(176, 101, 121, 0.45);
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px rgba(42, 35, 39, 0.12);
+}
+
+.bento-graphic {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.6s ease;
+}
+
+.bento-card:hover .bento-graphic {
+    transform: scale(1.05);
+}
+
+.bento-body {
+    position: relative;
+    z-index: 2;
+    margin-top: auto;
+    padding: 22px 22px 24px;
+    background: linear-gradient(to top, rgba(8, 6, 9, 0.78) 30%, rgba(8, 6, 9, 0.3) 75%, transparent);
+    backdrop-filter: blur(2px);
+    color: #fdfbfc;
+}
+
+.bento-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #e7c8d1;
+}
+
+.bento-title {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 22px;
+    letter-spacing: 0.02em;
+    margin: 6px 0 6px;
+}
+
+.bento-desc {
+    font-size: 13px;
+    line-height: 1.55;
+    color: #d8d1d5;
+    max-width: 46ch;
+}
+
+@media (min-width: 900px) {
+    .bento {
+        grid-template-rows: repeat(2, 1fr);
+    }
+
+    .bento-card.col-3 {
+        grid-column: span 3;
+    }
+
+    .bento-card.col-2 {
+        grid-column: span 2;
+    }
+}
+
+
+/* =========================================
    MOBILE
 ========================================= */
 
@@ -531,5 +624,9 @@ body.no-scroll {
     .acc-caption {
         font-size: 15px;
         padding: 12px 12px 24px;
+    }
+
+    .bento-card {
+        min-height: 260px;
     }
 }
