@@ -8,9 +8,9 @@ Basit, tek kişilik bir giriş ekranı ve arkasındaki özel sayfalar. Saf HTML 
 |---|---|
 | `index.html` | Giriş ekranı (cam efektli kart + arka planda YouTube videosu) |
 | `home.html` | Girişten sonra açılan akordeon galeri |
-| `gallery.html` | Yerel görsellerden ızgara galeri + lightbox |
+| `gallery.html` | Izgara galeri + lightbox |
 | `letter.html` | Tek sütun mektup sayfası |
-| `timeline.html` | Dikey zaman çizelgesi / anılar |
+| `papatya.html` | Papatya falı (seviyor / sevmiyor) mini oyunu |
 
 ## Giriş bilgileri
 
