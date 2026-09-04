@@ -223,57 +223,6 @@ body {
 }
 
 /* =========================================
-   SCROLL DOWN INDICATOR
-========================================= */
-
-.scroll-down {
-    position: absolute;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 13px;
-    font-weight: 400;
-    
-    cursor: pointer;
-    transition: color 0.3s ease;
-}
-
-.scroll-down:hover {
-    color: #ffffff;
-}
-
-.scroll-down .mouse-icon {
-    width: 18px;
-    height: 18px;
-}
-
-.scroll-down .chevron-icon {
-    width: 16px;
-    height: 16px;
-    animation: bounce 2s infinite;
-}
-
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0);
-    }
-    40% {
-        transform: translateY(-5px);
-    }
-    60% {
-        transform: translateY(-3px);
-    }
-}
-
-/* =========================================
    RESPONSIVE (MOBILE)
 ========================================= */
 
