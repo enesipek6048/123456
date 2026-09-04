@@ -65,7 +65,7 @@
                 </div>
             </a>
 
-            <div class="bento-card col-2 celebrate">
+            <div class="bento-card col-2 celebrate is-clickable" id="birthdayCard" role="button" tabindex="0" aria-label="Videoyu büyüt">
                 <video
                     class="bento-graphic bento-video"
                     src="dogum-gunu.mp4"
@@ -95,7 +95,51 @@
 
     </div>
 
+    <div class="video-modal" id="videoModal" hidden>
+        <button type="button" class="video-modal-close" id="videoModalClose" aria-label="Kapat">&times;</button>
+        <video id="videoModalPlayer" src="dogum-gunu.mp4" controls loop playsinline></video>
+    </div>
+
     <footer class="site-footer">PRIVATE • 2026</footer>
+
+    <script>
+        (function () {
+            const card = document.getElementById("birthdayCard");
+            const modal = document.getElementById("videoModal");
+            const player = document.getElementById("videoModalPlayer");
+            const closeBtn = document.getElementById("videoModalClose");
+
+            function openModal() {
+                modal.hidden = false;
+                document.body.classList.add("no-scroll");
+                player.currentTime = 0;
+                player.muted = false;
+                player.play().catch(() => {});
+            }
+
+            function closeModal() {
+                modal.hidden = true;
+                document.body.classList.remove("no-scroll");
+                player.pause();
+            }
+
+            card.addEventListener("click", openModal);
+            card.addEventListener("keydown", function (e) {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    openModal();
+                }
+            });
+
+            closeBtn.addEventListener("click", closeModal);
+            modal.addEventListener("click", function (e) {
+                if (e.target === modal) closeModal();
+            });
+            document.addEventListener("keydown", function (e) {
+                if (e.key === "Escape" && !modal.hidden) closeModal();
+            });
+        })();
+    </script>
 
 </body>
 </html>

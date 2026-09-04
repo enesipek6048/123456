@@ -553,6 +553,60 @@ body.no-scroll {
     display: block;
 }
 
+.bento-card.is-clickable {
+    cursor: pointer;
+}
+
+
+/* Tıklayınca açılan video büyütme penceresi */
+.video-modal[hidden] {
+    display: none;
+}
+
+.video-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: grid;
+    place-content: center;
+    padding: 24px;
+    background: rgba(8, 6, 9, 0.82);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: accFade 0.2s ease;
+}
+
+.video-modal video {
+    max-width: min(900px, 92vw);
+    max-height: 82vh;
+    width: auto;
+    height: auto;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: #000;
+    animation: accPop 0.25s ease;
+}
+
+.video-modal-close {
+    position: absolute;
+    top: 18px;
+    right: 22px;
+    width: 40px;
+    height: 40px;
+    font-size: 26px;
+    line-height: 1;
+    color: #fdfbfc;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.video-modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
 .bento-card:hover .bento-graphic {
     transform: scale(1.05);
 }
