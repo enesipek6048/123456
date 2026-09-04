@@ -48,7 +48,7 @@
             </a>
 
             <a class="bento-card col-3" href="gallery.html">
-                <div class="bento-graphic" style="background-image: url('img_0785.jpg')"></div>
+                <div class="bento-graphic" id="karelerGraphic" style="background-image: url('img_0785.jpg'); transition: opacity 0.6s ease, transform 0.6s ease;"></div>
                 <div class="bento-body">
                     <span class="bento-eyebrow">Galeri</span>
                     <h2 class="bento-title">Kareler</h2>
@@ -212,6 +212,47 @@
             modal.addEventListener("click", function (e) {
                 if (e.target === modal) closePw();
             });
+        })();
+
+        (function () {
+            const el = document.getElementById("karelerGraphic");
+            if (!el) return;
+
+            const photos = [
+                "img_0746.jpg", "img_0763.jpg", "img_0764.jpg", "img_0765.jpg",
+                "img_0766.jpg", "img_0767.jpg", "img_0768.jpg", "img_0769.jpg",
+                "img_0770.jpg", "img_0784.jpg", "img_0785.jpg", "img_0789.jpg",
+                "img_0791.jpg", "img_0802.jpg", "img_0863.jpg", "img_0864.jpg",
+                "img_0979.jpg", "img_0982.jpg", "img_0983.jpg", "img_0985.jpg",
+                "img_0986.jpg", "img_1033.jpg"
+            ];
+
+            let current = -1;
+
+            function pick() {
+                let i;
+                do {
+                    i = Math.floor(Math.random() * photos.length);
+                } while (i === current && photos.length > 1);
+                current = i;
+                return photos[i];
+            }
+
+            function swap() {
+                const src = pick();
+                const pre = new Image();
+                pre.onload = function () {
+                    el.style.opacity = "0";
+                    setTimeout(function () {
+                        el.style.backgroundImage = "url('" + src + "')";
+                        el.style.opacity = "1";
+                    }, 350);
+                };
+                pre.src = src;
+            }
+
+            swap();
+            setInterval(swap, 4000);
         })();
     </script>
 
