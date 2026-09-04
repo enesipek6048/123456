@@ -36,6 +36,12 @@
         <p class="page-lead">Büyütmek için bir kareye dokun.</p>
         <div class="rule"></div>
 
+        <button type="button" class="gallery-add" id="galleryAdd">
+            <span class="plus">+</span> Fotoğraf ekle
+        </button>
+        <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp" hidden>
+        <p class="gallery-status" id="galleryStatus"></p>
+
         <div class="gallery" id="gallery">
             <figure><img src="img_0746.jpg" alt="Kare" loading="lazy"></figure>
             <figure><img src="img_0763.jpg" alt="Kare" loading="lazy"></figure>
@@ -69,29 +75,7 @@
 
     <footer class="site-footer">PRIVATE • 2026</footer>
 
-    <script>
-        const gallery = document.getElementById("gallery");
-        const lightbox = document.getElementById("lightbox");
-        const lightboxImg = document.getElementById("lightboxImg");
-
-        gallery.addEventListener("click", (e) => {
-            const img = e.target.closest("img");
-            if (!img) return;
-            lightboxImg.src = img.src;
-            lightboxImg.alt = img.alt;
-            lightbox.hidden = false;
-        });
-
-        function closeLightbox() {
-            lightbox.hidden = true;
-            lightboxImg.src = "";
-        }
-
-        lightbox.addEventListener("click", closeLightbox);
-        document.addEventListener("keydown", (e) => {
-            if (e.key === "Escape") closeLightbox();
-        });
-    </script>
+    <script src="gallery.js"></script>
 
 </body>
 </html>

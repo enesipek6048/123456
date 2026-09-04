@@ -18,6 +18,21 @@ Kullanıcı adı `ezel`, şifre `123456` — [`script.js`](script.js) içinde ta
 
 > Not: Doğrulama tamamen istemci tarafındadır, gerçek güvenlik sağlamaz. Sayfa kaynağına bakan herkes şifreyi görebilir.
 
+## Galeri foto yükleme (Vercel Blob)
+
+`gallery.html` üzerindeki **+ Fotoğraf ekle** butonu, seçilen görseli tarayıcıda
+küçültüp `POST /api/upload`'a gönderir; sunucu onu Vercel Blob'a koyar ve herkese
+açık URL döner. `GET /api/photos` yüklenmiş fotoğrafları listeler.
+
+Çalışması için Vercel projesine bir **Blob store** bağlanmalı:
+
+1. Vercel panosu → proje → **Storage** → **Create Database** → **Blob** → projeye bağla.
+2. Bu, `BLOB_READ_WRITE_TOKEN` ortam değişkenini otomatik ekler.
+3. Yeniden deploy et (`git push` yeterli).
+
+Store bağlı değilken `/api/upload` 500 döner; site geri kalanı normal çalışır.
+Yerel statik sunucuda `/api/*` yoktur, yükleme sadece yayında çalışır.
+
 ## Yerel çalıştırma
 
 Herhangi bir statik sunucu yeterli:

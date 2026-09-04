@@ -1,0 +1,10 @@
+{
+  "name": "ezel-private-space",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Statik site + galeri foto yükleme (Vercel Blob)",
+  "dependencies": {
+    "@vercel/blob": "^2.8.0"
+  }
+}
