@@ -33,32 +33,22 @@
         </header>
 
         <h1 class="page-title">Mektup</h1>
-        <p class="page-lead">Aceleye getirilmeden yazıldı.</p>
+        <p class="page-lead">Aklından geçeni buraya yaz; kaydet, kalsın.</p>
         <div class="rule"></div>
 
-        <article class="letter">
-            <p>Sevgili Ezel,</p>
-
-            <p>
-                Bu satırları senin için ayırdım. Buraya bir gün geldiğinde,
-                dışarıdaki hiçbir şeyin acele ettirmediği bir köşe olsun istedim.
-            </p>
-
-            <p>
-                (Bu metni dilediğin gibi değiştir. <em>letter.html</em> dosyasını açıp
-                bu paragrafların yerine kendi cümlelerini yazman yeterli.)
-            </p>
-
-            <p>
-                Bazı şeyler sadece doğru kişi için açılır. Bu sayfa da öyle.
-            </p>
-
-            <p class="signature">— Sonsuza dek, buradayım.</p>
-        </article>
+        <div class="letter-edit">
+            <textarea id="letterText" class="letter-area" placeholder="Buraya yaz…" spellcheck="false"></textarea>
+            <div class="letter-bar">
+                <span class="letter-status" id="letterStatus"></span>
+                <button type="button" class="letter-save" id="letterSave">Kaydet</button>
+            </div>
+        </div>
 
     </div>
 
     <footer class="site-footer">PRIVATE • 2026</footer>
+
+    <script src="letter.js"></script>
 
 </body>
 </html>

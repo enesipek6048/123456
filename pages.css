@@ -309,7 +309,7 @@ body {
     font-family: var(--serif);
     font-size: 19px;
     line-height: 1.9;
-    color: #d9d1d5;
+    color: var(--text);
     max-width: 60ch;
 }
 
@@ -321,6 +321,66 @@ body {
     margin-top: 40px;
     font-style: italic;
     color: var(--accent);
+}
+
+/* Yazılabilir mektup */
+.letter-edit {
+    max-width: 62ch;
+}
+
+.letter-area {
+    width: 100%;
+    min-height: 46vh;
+    resize: vertical;
+    padding: 4px 0;
+    border: none;
+    border-bottom: 1px solid transparent;
+    outline: none;
+    background: transparent;
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.9;
+    color: var(--text);
+}
+
+.letter-area::placeholder {
+    color: var(--dim);
+}
+
+.letter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.letter-status {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.letter-save {
+    padding: 11px 24px;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #fdfbfc;
+    background: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.letter-save:hover {
+    opacity: 0.9;
+}
+
+.letter-save:disabled {
+    opacity: 0.5;
+    cursor: default;
 }
 
 
