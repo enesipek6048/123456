@@ -3,3 +3,9 @@ node_modules/
 .DS_Store
 Thumbs.db
 *.log
+
+# Kaynak telefon fotoğrafları (tarayıcıda gösterilemez; web'de img_*.jpg kullanılıyor)
+*.HEIC
+*.heic
+IMG_*.PNG
+IMG_*.MOV
