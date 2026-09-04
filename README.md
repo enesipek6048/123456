@@ -24,9 +24,10 @@ Kullanıcı adı `ezel`, şifre `123456` — [`script.js`](script.js) içinde ta
 küçültüp `POST /api/upload`'a gönderir; sunucu onu Vercel Blob'a koyar ve herkese
 açık URL döner. `GET /api/photos` yüklenmiş fotoğrafları listeler.
 
-`letter.html` de aynı Blob store'u kullanır: sayfadaki metin alanı
-`GET /api/letter` ile yüklenir, **Kaydet** (veya Ctrl/Cmd+S) `POST /api/letter`
-ile `letter/current.txt` blob'unu üzerine yazar.
+`letter.html` de aynı Blob store'u kullanır: metin alanı `GET /api/letter` ile,
+altındaki küçük çizim tuvali `GET /api/drawing` ile yüklenir. **Kaydet** (veya
+Ctrl/Cmd+S) ikisini birden yazar — `letter/current.txt` ve `drawing/current.png`
+blob'larını üzerine yazarak.
 
 Çalışması için Vercel projesine bir **Blob store** bağlanmalı:
 

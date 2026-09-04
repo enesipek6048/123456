@@ -38,6 +38,15 @@
 
         <div class="letter-edit">
             <textarea id="letterText" class="letter-area" placeholder="Buraya yaz…" spellcheck="false"></textarea>
+
+            <div class="pad">
+                <div class="pad-head">
+                    <span class="pad-label">Küçük çizim</span>
+                    <button type="button" class="pad-clear" id="padClear">Temizle</button>
+                </div>
+                <canvas id="padCanvas" class="pad-canvas"></canvas>
+            </div>
+
             <div class="letter-bar">
                 <span class="letter-status" id="letterStatus"></span>
                 <button type="button" class="letter-save" id="letterSave">Kaydet</button>

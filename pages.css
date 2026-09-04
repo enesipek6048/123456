@@ -383,6 +383,56 @@ body {
     cursor: default;
 }
 
+/* Çizim alanı */
+.pad {
+    margin-top: 30px;
+    max-width: 620px;
+}
+
+.pad-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.pad-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.pad-clear {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.pad-clear:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.pad-canvas {
+    display: block;
+    width: 100%;
+    height: 240px;
+    background: #ffffff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    touch-action: none;
+    cursor: crosshair;
+}
+
 
 /* =========================================
    TIMELINE
