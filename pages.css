@@ -646,6 +646,111 @@ body.no-scroll {
     background: rgba(255, 255, 255, 0.2);
 }
 
+
+/* Şifre penceresi (Özel kartı) */
+.pw-modal[hidden] {
+    display: none;
+}
+
+.pw-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: grid;
+    place-content: center;
+    padding: 24px;
+    background: rgba(8, 6, 9, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: accFade 0.2s ease;
+}
+
+.pw-card {
+    width: min(320px, 90vw);
+    padding: 30px 26px 24px;
+    text-align: center;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: 0 24px 60px rgba(42, 35, 39, 0.22);
+    animation: accPop 0.25s ease;
+}
+
+.pw-title {
+    font-family: var(--serif);
+    font-size: 21px;
+    font-weight: 500;
+    color: var(--text);
+}
+
+.pw-hint {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.pw-card input {
+    width: 64px;
+    margin: 18px auto 0;
+    padding: 12px 0;
+    text-align: center;
+    font-size: 22px;
+    font-family: var(--serif);
+    color: var(--text);
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.pw-card input:focus {
+    border-color: var(--accent);
+}
+
+.pw-error {
+    margin-top: 12px;
+    font-size: 12px;
+    color: #c62828;
+}
+
+.pw-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.pw-btn {
+    flex: 1;
+    padding: 11px 0;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #fdfbfc;
+    background: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.pw-btn:hover {
+    opacity: 0.9;
+}
+
+.pw-btn.ghost {
+    color: var(--muted);
+    background: transparent;
+    border-color: var(--line);
+}
+
+.pw-btn.ghost:hover {
+    opacity: 1;
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
 .bento-card:hover .bento-graphic {
     transform: scale(1.05);
 }

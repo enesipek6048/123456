@@ -82,10 +82,10 @@
                 </div>
             </div>
 
-            <div class="bento-card col-2">
+            <div class="bento-card col-2 is-clickable" id="ozelCard" role="button" tabindex="0" aria-label="Kilitli — şifre gerekli">
                 <div class="bento-graphic" style="background-image: url('https://images.unsplash.com/photo-1548192746-dd526f154ed9?q=80&w=1200&auto=format')"></div>
                 <div class="bento-body">
-                    <span class="bento-eyebrow">Özel</span>
+                    <span class="bento-eyebrow">Özel &#128274;</span>
                     <h2 class="bento-title">Sadece sana</h2>
                     <p class="bento-desc">Bu alan doğru kişi dışında kimseye açılmıyor.</p>
                 </div>
@@ -98,6 +98,19 @@
     <div class="video-modal" id="videoModal" hidden>
         <button type="button" class="video-modal-close" id="videoModalClose" aria-label="Kapat">&times;</button>
         <video id="videoModalPlayer" src="dogum-gunu.mp4" controls loop playsinline></video>
+    </div>
+
+    <div class="pw-modal" id="pwModal" hidden>
+        <div class="pw-card">
+            <p class="pw-title">Bu alan kilitli</p>
+            <p class="pw-hint">Şifre tek harf.</p>
+            <input type="password" id="pwInput" maxlength="1" inputmode="text" autocomplete="off" aria-label="Şifre">
+            <p class="pw-error" id="pwError" hidden>Yanlış.</p>
+            <div class="pw-actions">
+                <button type="button" class="pw-btn ghost" id="pwCancel">Vazgeç</button>
+                <button type="button" class="pw-btn" id="pwOk">Aç</button>
+            </div>
+        </div>
     </div>
 
     <footer class="site-footer">PRIVATE • 2026</footer>
@@ -137,6 +150,59 @@
             });
             document.addEventListener("keydown", function (e) {
                 if (e.key === "Escape" && !modal.hidden) closeModal();
+            });
+        })();
+
+        (function () {
+            const OZEL_SIFRE = "k";
+
+            const card = document.getElementById("ozelCard");
+            const modal = document.getElementById("pwModal");
+            const input = document.getElementById("pwInput");
+            const errorEl = document.getElementById("pwError");
+            const okBtn = document.getElementById("pwOk");
+            const cancelBtn = document.getElementById("pwCancel");
+
+            function openPw() {
+                modal.hidden = false;
+                errorEl.hidden = true;
+                input.value = "";
+                document.body.classList.add("no-scroll");
+                setTimeout(function () { input.focus(); }, 30);
+            }
+
+            function closePw() {
+                modal.hidden = true;
+                document.body.classList.remove("no-scroll");
+            }
+
+            function tryPw() {
+                if (input.value.toLowerCase() === OZEL_SIFRE) {
+                    window.location.href = "ozel.html";
+                } else {
+                    errorEl.hidden = false;
+                    input.value = "";
+                    input.focus();
+                }
+            }
+
+            card.addEventListener("click", openPw);
+            card.addEventListener("keydown", function (e) {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    openPw();
+                }
+            });
+
+            okBtn.addEventListener("click", tryPw);
+            cancelBtn.addEventListener("click", closePw);
+            input.addEventListener("input", function () { errorEl.hidden = true; });
+            input.addEventListener("keydown", function (e) {
+                if (e.key === "Enter") tryPw();
+                if (e.key === "Escape") closePw();
+            });
+            modal.addEventListener("click", function (e) {
+                if (e.target === modal) closePw();
             });
         })();
     </script>
