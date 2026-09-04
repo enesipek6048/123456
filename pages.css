@@ -328,6 +328,23 @@ body {
     max-width: 62ch;
 }
 
+.letter-photo {
+    width: 170px;
+    margin: 0 0 24px;
+    padding: 8px 8px 14px;
+    background: #fff;
+    border: 1px solid var(--line);
+    box-shadow: 0 10px 24px rgba(42, 35, 39, 0.12);
+    transform: rotate(-2deg);
+}
+
+.letter-photo img {
+    display: block;
+    width: 100%;
+    height: 210px;
+    object-fit: cover;
+}
+
 .letter-area {
     width: 100%;
     min-height: 46vh;
