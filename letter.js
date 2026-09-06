@@ -1,5 +1,7 @@
 /* =========================================
-   MEKTUP — yazı + küçük çizim, kaydet (Vercel Blob)
+   MEKTUP — yazı + küçük çizim
+   Sunucu (Vercel Blob) varsa oraya, yoksa
+   bu cihazın tarayıcısına kaydeder.
 ========================================= */
 
 const area = document.getElementById("letterText");
@@ -12,6 +14,9 @@ const ctx = canvas.getContext("2d");
 
 const INK = "#2a2327";
 const PAD_H = 240;
+
+const LS_TEXT = "ezel_letter_text";
+const LS_DRAW = "ezel_letter_drawing";
 
 
 /* ---------- Çizim alanı ---------- */
@@ -72,32 +77,53 @@ clearBtn.addEventListener("click", () => {
 
 /* ---------- Yükle ---------- */
 
+function drawFromUrl(src) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => {
+            const w = canvas.getBoundingClientRect().width || 620;
+            ctx.drawImage(img, 0, 0, w, PAD_H);
+            resolve();
+        };
+        img.onerror = resolve;
+        img.src = src;
+    });
+}
+
 async function loadText() {
     try {
         const res = await fetch("/api/letter");
-        if (!res.ok) return;
-        const data = await res.json();
-        if (typeof data.text === "string") area.value = data.text;
+        if (res.ok) {
+            const data = await res.json();
+            if (typeof data.text === "string" && data.text !== "") {
+                area.value = data.text;
+                return;
+            }
+        }
+    } catch (_) {}
+
+    try {
+        const t = localStorage.getItem(LS_TEXT);
+        if (t != null) area.value = t;
     } catch (_) {}
 }
 
 async function loadDrawing() {
     try {
         const res = await fetch("/api/drawing");
-        if (!res.ok) return;
-        const data = await res.json();
-        if (!data.url) return;
-        await new Promise((resolve) => {
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-            img.onload = () => {
-                const cssW = canvas.getBoundingClientRect().width || 620;
-                ctx.drawImage(img, 0, 0, cssW, PAD_H);
-                resolve();
-            };
-            img.onerror = resolve;
-            img.src = data.url;
-        });
+        if (res.ok) {
+            const data = await res.json();
+            if (data.url) {
+                await drawFromUrl(data.url);
+                return;
+            }
+        }
+    } catch (_) {}
+
+    try {
+        const d = localStorage.getItem(LS_DRAW);
+        if (d) await drawFromUrl(d);
     } catch (_) {}
 }
 
@@ -107,34 +133,51 @@ async function loadDrawing() {
 async function save() {
     saveBtn.disabled = true;
     statusEl.textContent = "Kaydediliyor…";
+
+    const text = area.value;
+    const drawingData = canvas.toDataURL("image/png");
+
+    // 1) Her hâlükârda bu cihaza yaz — böylece "hiçbir şey olmuyor" olmaz.
+    let localOk = true;
     try {
-        const results = await Promise.allSettled([
+        localStorage.setItem(LS_TEXT, text);
+        localStorage.setItem(LS_DRAW, drawingData);
+    } catch (_) {
+        localOk = false;
+    }
+
+    // 2) Sunucuya (Vercel Blob) göndermeyi dene.
+    let serverOk = false;
+    try {
+        const [r1, r2] = await Promise.all([
             fetch("/api/letter", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ text: area.value }),
+                body: JSON.stringify({ text }),
             }),
             fetch("/api/drawing", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ dataUrl: canvas.toDataURL("image/png") }),
+                body: JSON.stringify({ dataUrl: drawingData }),
             }),
         ]);
-
-        const failed = results.filter(
-            (r) => r.status === "rejected" || !r.value.ok
-        );
-        if (failed.length) throw new Error("Bir kısmı kaydedilemedi.");
-
-        statusEl.textContent = "Kaydedildi ✓";
-        setTimeout(() => {
-            statusEl.textContent = "";
-        }, 2500);
-    } catch (err) {
-        statusEl.textContent = "Hata: " + err.message;
-    } finally {
-        saveBtn.disabled = false;
+        serverOk = r1.ok && r2.ok;
+    } catch (_) {
+        serverOk = false;
     }
+
+    saveBtn.disabled = false;
+
+    if (serverOk) {
+        statusEl.textContent = "Kaydedildi ✓";
+    } else if (localOk) {
+        statusEl.textContent = "Bu cihaza kaydedildi.";
+    } else {
+        statusEl.textContent = "Kaydedilemedi.";
+    }
+    setTimeout(() => {
+        statusEl.textContent = "";
+    }, 4000);
 }
 
 saveBtn.addEventListener("click", save);
