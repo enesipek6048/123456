@@ -1,5 +1,7 @@
 /* =========================================
    GALERİ — lightbox + fotoğraf yükleme
+   Sunucu (Vercel Blob) varsa oraya, yoksa
+   bu cihazın tarayıcısına kaydeder.
 ========================================= */
 
 const grid = document.getElementById("gallery");
@@ -8,6 +10,8 @@ const lightboxImg = document.getElementById("lightboxImg");
 const addBtn = document.getElementById("galleryAdd");
 const fileInput = document.getElementById("photoInput");
 const statusEl = document.getElementById("galleryStatus");
+
+const LS_PHOTOS = "ezel_gallery_photos";
 
 
 /* ---------- Lightbox ---------- */
@@ -33,15 +37,33 @@ document.addEventListener("keydown", (e) => {
 
 /* ---------- Yüklenmiş fotoğrafları getir ---------- */
 
+function readLocalPhotos() {
+    try {
+        return JSON.parse(localStorage.getItem(LS_PHOTOS) || "[]");
+    } catch (_) {
+        return [];
+    }
+}
+
+function writeLocalPhotos(arr) {
+    localStorage.setItem(LS_PHOTOS, JSON.stringify(arr));
+}
+
 async function loadUploaded() {
+    let serverUrls = [];
     try {
         const res = await fetch("/api/photos");
-        if (!res.ok) return;
-        const data = await res.json();
-        (data.photos || []).forEach((p) => addFigure(p.url));
+        if (res.ok) {
+            const data = await res.json();
+            serverUrls = (data.photos || []).map((p) => p.url);
+        }
     } catch (_) {
-        // Yerel statik sunucuda /api yok — sorun değil.
+        // Sunucu yok — sorun değil.
     }
+    serverUrls.forEach((u) => addFigure(u));
+
+    // Bu cihaza kaydedilenler
+    readLocalPhotos().forEach((src) => addFigure(src));
 }
 
 function addFigure(src, pending) {
@@ -93,18 +115,21 @@ fileInput.addEventListener("change", async () => {
 
     statusEl.textContent = "Hazırlanıyor…";
 
-    let dataUrl;
+    // Sunucu için büyük, tarayıcı yedeği için daha küçük sürüm.
+    let dataUrl, small;
     try {
-        dataUrl = await resizeImage(file);
+        dataUrl = await resizeImage(file, 1600, 0.82);
+        small = await resizeImage(file, 1000, 0.7);
     } catch (_) {
         statusEl.textContent =
             "Bu görsel açılamadı. JPEG veya PNG seç (iPhone HEIC desteklenmiyor).";
         return;
     }
 
-    const fig = addFigure(dataUrl, true);
-    statusEl.textContent = "Yükleniyor…";
+    const fig = addFigure(small, true);
+    statusEl.textContent = "Kaydediliyor…";
 
+    // 1) Sunucuya dene
     try {
         const res = await fetch("/api/upload", {
             method: "POST",
@@ -112,17 +137,29 @@ fileInput.addEventListener("change", async () => {
             body: JSON.stringify({ dataUrl }),
         });
         const out = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(out.error || "Yükleme başarısız.");
+        if (res.ok && out.url) {
+            fig.classList.remove("pending");
+            fig.querySelector("img").src = out.url;
+            statusEl.textContent = "Eklendi ✓";
+            setTimeout(() => (statusEl.textContent = ""), 2500);
+            return;
+        }
+    } catch (_) {
+        // sunucu yok — yerele düş
+    }
 
+    // 2) Bu cihaza kaydet
+    try {
+        const arr = readLocalPhotos();
+        arr.push(small);
+        writeLocalPhotos(arr);
         fig.classList.remove("pending");
-        fig.querySelector("img").src = out.url;
-        statusEl.textContent = "Eklendi ✓";
-        setTimeout(() => {
-            statusEl.textContent = "";
-        }, 2500);
-    } catch (err) {
+        statusEl.textContent = "Bu cihaza kaydedildi.";
+        setTimeout(() => (statusEl.textContent = ""), 3000);
+    } catch (_) {
         fig.remove();
-        statusEl.textContent = "Yüklenemedi: " + err.message;
+        statusEl.textContent =
+            "Bu cihazın deposu dolu — daha fazla fotoğraf eklenemiyor.";
     }
 });
 
