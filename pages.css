@@ -383,6 +383,25 @@ body {
     cursor: default;
 }
 
+.letter-delete {
+    padding: 11px 20px;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #c0576a;
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.letter-delete:hover {
+    border-color: #c0576a;
+    background: rgba(192, 87, 106, 0.07);
+}
+
 /* Çizim alanı */
 .pad {
     margin-top: 30px;

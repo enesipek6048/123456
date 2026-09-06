@@ -6,6 +6,7 @@
 
 const area = document.getElementById("letterText");
 const saveBtn = document.getElementById("letterSave");
+const deleteBtn = document.getElementById("letterDelete");
 const statusEl = document.getElementById("letterStatus");
 
 const canvas = document.getElementById("padCanvas");
@@ -188,6 +189,47 @@ document.addEventListener("keydown", (e) => {
         save();
     }
 });
+
+
+/* ---------- Sil ---------- */
+
+async function wipe() {
+    if (!confirm("Yazı ve çizim silinsin mi?")) return;
+
+    area.value = "";
+    const cssW = canvas.getBoundingClientRect().width || 620;
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, cssW, PAD_H);
+
+    try {
+        localStorage.removeItem(LS_TEXT);
+        localStorage.removeItem(LS_DRAW);
+    } catch (_) {}
+
+    statusEl.textContent = "Siliniyor…";
+
+    try {
+        await Promise.all([
+            fetch("/api/letter", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: "" }),
+            }),
+            fetch("/api/drawing", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ dataUrl: canvas.toDataURL("image/png") }),
+            }),
+        ]);
+    } catch (_) {}
+
+    statusEl.textContent = "Silindi.";
+    setTimeout(() => {
+        statusEl.textContent = "";
+    }, 3000);
+}
+
+deleteBtn.addEventListener("click", wipe);
 
 
 /* ---------- Başlat ---------- */
