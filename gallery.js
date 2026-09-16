@@ -7,11 +7,65 @@
 const grid = document.getElementById("gallery");
 const lightbox = document.getElementById("lightbox");
 const lightboxImg = document.getElementById("lightboxImg");
+const lightboxDownloadBtn = document.getElementById("lightboxDownload");
 const addBtn = document.getElementById("galleryAdd");
 const fileInput = document.getElementById("photoInput");
 const statusEl = document.getElementById("galleryStatus");
 
 const LS_PHOTOS = "ezel_gallery_photos";
+
+
+/* ---------- İndirme ---------- */
+
+function filenameFromSrc(src) {
+    try {
+        const path = new URL(src, location.href).pathname;
+        const name = path.split("/").pop();
+        if (name && /\.(jpe?g|png|webp)$/i.test(name)) return name;
+    } catch (_) {
+        // yoksay
+    }
+    return `ezel-foto-${Date.now()}.jpg`;
+}
+
+async function downloadImage(src, filename) {
+    try {
+        const res = await fetch(src, { mode: "cors" });
+        if (!res.ok) throw new Error("fetch-failed");
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 4000);
+    } catch (_) {
+        // CORS vb. engellerse en azından yeni sekmede aç.
+        window.open(src, "_blank");
+    }
+}
+
+function makeDownloadBtn(getSrc) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "dl-btn";
+    btn.setAttribute("aria-label", "Fotoğrafı indir");
+    btn.textContent = "⬇";
+    btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const src = getSrc();
+        downloadImage(src, filenameFromSrc(src));
+    });
+    return btn;
+}
+
+// Sayfada hazır duran (yüklemeden önceki) karelere de indir butonu ekle.
+document.querySelectorAll("#gallery figure").forEach((fig) => {
+    const img = fig.querySelector("img");
+    if (img) fig.appendChild(makeDownloadBtn(() => img.src));
+});
 
 
 /* ---------- Lightbox ---------- */
@@ -30,6 +84,10 @@ function closeLightbox() {
 }
 
 lightbox.addEventListener("click", closeLightbox);
+lightboxDownloadBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    downloadImage(lightboxImg.src, filenameFromSrc(lightboxImg.src));
+});
 document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeLightbox();
 });
@@ -74,6 +132,7 @@ function addFigure(src, pending) {
     img.alt = "Kare";
     img.loading = "lazy";
     fig.appendChild(img);
+    fig.appendChild(makeDownloadBtn(() => img.src));
     grid.appendChild(fig);
     return fig;
 }
