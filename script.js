@@ -103,6 +103,9 @@ function successfulLogin() {
     loginButton.style.opacity = "0.85";
     loginButton.style.cursor = "default";
 
+    // Müzik her girişte baştan başlasın
+    try { sessionStorage.removeItem("muzik-zaman"); } catch (e) {}
+
     setTimeout(() => {
         window.location.href = "home.html";
     }, 900);
