@@ -22,7 +22,8 @@ video.addEventListener("error", () => {
 });
 
 function acVideo() {
-    if (!videoVar) return;
+    // Hata, dinleyici eklenmeden önce de oluşmuş olabilir; durumu doğrudan da kontrol et.
+    if (!videoVar || video.error || video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) return;
     videoModal.hidden = false;
     document.body.classList.add("no-scroll");
     video.currentTime = 0;
