@@ -362,12 +362,12 @@ videoInput.addEventListener("change", async () => {
     statusEl.textContent = "Video yükleniyor… %0";
 
     try {
-        const { upload } = await import(BLOB_CLIENT);
-        const blob = await upload(`gallery/video-${Date.now()}.${ext}`, file, {
+        const { uploadPresigned } = await import(BLOB_CLIENT);
+        const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        const blob = await uploadPresigned(`gallery/video-${id}.${ext}`, file, {
             access: "public",
             handleUploadUrl: "/api/video-upload",
             contentType: file.type || undefined,
-            multipart: file.size > 20 * 1024 * 1024,
             onUploadProgress: ({ percentage }) => {
                 statusEl.textContent = `Video yükleniyor… %${Math.round(percentage)}`;
             },

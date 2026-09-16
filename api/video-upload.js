@@ -1,8 +1,11 @@
-import { handleUpload } from "@vercel/blob/client";
+import { handleUploadPresigned } from "@vercel/blob/client";
+import { issueSignedToken } from "@vercel/blob";
 
 const MAX_BYTES = 300 * 1024 * 1024;
+const VIDEO_TYPES = ["video/mp4", "video/quicktime", "video/webm", "video/x-m4v"];
 
-// Tarayıcı videoyu doğrudan Vercel Blob'a yükler; bu uç yalnızca izin (token) verir.
+// Tarayıcı videoyu doğrudan Vercel Blob'a yükler; bu uç yalnızca
+// o dosya adı için kısa ömürlü bir yükleme izni (presigned URL) verir.
 export default async function handler(req, res) {
     if (req.method !== "POST") {
         res.status(405).json({ error: "Yalnızca POST" });
@@ -13,22 +16,27 @@ export default async function handler(req, res) {
         const body =
             typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
 
-        const out = await handleUpload({
+        const out = await handleUploadPresigned({
             body,
             request: req,
-            onBeforeGenerateToken: async (pathname) => {
+            getSignedToken: async (pathname) => {
                 if (!/^gallery\/[\w-]+\.(mp4|mov|webm|m4v)$/i.test(pathname)) {
                     throw new Error("Geçersiz video adı.");
                 }
-                return {
-                    allowedContentTypes: [
-                        "video/mp4",
-                        "video/quicktime",
-                        "video/webm",
-                        "video/x-m4v",
-                    ],
+                const token = await issueSignedToken({
+                    pathname,
+                    operations: ["put"],
+                    allowedContentTypes: VIDEO_TYPES,
                     maximumSizeInBytes: MAX_BYTES,
-                    addRandomSuffix: true,
+                    validUntil: Date.now() + 30 * 60 * 1000,
+                });
+                return {
+                    token,
+                    urlOptions: {
+                        allowedContentTypes: VIDEO_TYPES,
+                        maximumSizeInBytes: MAX_BYTES,
+                        addRandomSuffix: false,
+                    },
                 };
             },
         });
