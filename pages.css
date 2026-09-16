@@ -333,11 +333,16 @@ body {
     border: 1px solid var(--line);
 }
 
-.lightbox-download {
+.lightbox-actions {
     position: absolute;
     left: 50%;
     bottom: 30px;
     transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+}
+
+.lightbox-download {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -358,6 +363,14 @@ body {
 
 .lightbox-download:hover {
     opacity: 0.85;
+}
+
+.lightbox-delete {
+    background: rgba(40, 32, 36, 0.9);
+}
+
+.lightbox-download[hidden] {
+    display: none;
 }
 
 

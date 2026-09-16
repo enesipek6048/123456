@@ -8,6 +8,7 @@ const grid = document.getElementById("gallery");
 const lightbox = document.getElementById("lightbox");
 const lightboxImg = document.getElementById("lightboxImg");
 const lightboxDownloadBtn = document.getElementById("lightboxDownload");
+const lightboxDeleteBtn = document.getElementById("lightboxDelete");
 const addBtn = document.getElementById("galleryAdd");
 const fileInput = document.getElementById("photoInput");
 const statusEl = document.getElementById("galleryStatus");
@@ -70,23 +71,65 @@ document.querySelectorAll("#gallery figure").forEach((fig) => {
 
 /* ---------- Lightbox ---------- */
 
+let openFigure = null;
+
+// Sadece sonradan yüklenenler silinebilir (sunucu blob'u veya bu cihazdaki kopya).
+function isServerPhoto(src) {
+    return /^https:\/\/[^/]+\.blob\.vercel-storage\.com\/gallery\//.test(src);
+}
+
+function isDeletable(src) {
+    return isServerPhoto(src) || src.startsWith("data:");
+}
+
 grid.addEventListener("click", (e) => {
     const img = e.target.closest("img");
     if (!img) return;
+    openFigure = img.closest("figure");
     lightboxImg.src = img.src;
     lightboxImg.alt = img.alt;
+    lightboxDeleteBtn.hidden = !isDeletable(img.src) || openFigure.classList.contains("pending");
     lightbox.hidden = false;
 });
 
 function closeLightbox() {
     lightbox.hidden = true;
     lightboxImg.src = "";
+    openFigure = null;
 }
 
 lightbox.addEventListener("click", closeLightbox);
 lightboxDownloadBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     downloadImage(lightboxImg.src, filenameFromSrc(lightboxImg.src));
+});
+lightboxDeleteBtn.addEventListener("click", async (e) => {
+    e.stopPropagation();
+    const fig = openFigure;
+    const src = lightboxImg.src;
+    if (!fig || !confirm("Bu fotoğraf galeriden silinsin mi?")) return;
+
+    lightboxDeleteBtn.disabled = true;
+    try {
+        if (isServerPhoto(src)) {
+            const res = await fetch("/api/delete", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ url: src }),
+            });
+            if (!res.ok) throw new Error("delete-failed");
+        } else {
+            writeLocalPhotos(readLocalPhotos().filter((p) => p !== src));
+        }
+        fig.remove();
+        closeLightbox();
+        statusEl.textContent = "Silindi ✓";
+        setTimeout(() => (statusEl.textContent = ""), 2500);
+    } catch (_) {
+        alert("Silinemedi, tekrar dene.");
+    } finally {
+        lightboxDeleteBtn.disabled = false;
+    }
 });
 document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeLightbox();
