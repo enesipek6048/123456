@@ -39,7 +39,11 @@
         <button type="button" class="gallery-add" id="galleryAdd">
             <span class="plus">+</span> Fotoğraf ekle
         </button>
+        <button type="button" class="gallery-add" id="galleryAddVideo">
+            <span class="plus">+</span> Video ekle
+        </button>
         <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp" hidden>
+        <input type="file" id="videoInput" accept="video/mp4,video/quicktime,video/webm,video/x-m4v" hidden>
         <p class="gallery-status" id="galleryStatus"></p>
 
         <div class="gallery" id="gallery">
@@ -118,6 +122,7 @@
 
     <div class="lightbox" id="lightbox" hidden>
         <img src="" alt="" id="lightboxImg">
+        <video id="lightboxVideo" controls playsinline hidden></video>
         <div class="lightbox-actions">
             <button type="button" class="lightbox-download" id="lightboxDownload">⬇ İndir</button>
             <button type="button" class="lightbox-download lightbox-delete" id="lightboxDelete" hidden>✕ Sil</button>

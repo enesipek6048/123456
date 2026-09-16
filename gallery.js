@@ -1,19 +1,40 @@
 /* =========================================
-   GALERİ — lightbox + fotoğraf yükleme
-   Sunucu (Vercel Blob) varsa oraya, yoksa
-   bu cihazın tarayıcısına kaydeder.
+   GALERİ — lightbox + fotoğraf/video yükleme
+   Fotoğraflar: sunucu (Vercel Blob) varsa oraya,
+   yoksa bu cihazın tarayıcısına kaydedilir.
+   Videolar: doğrudan Vercel Blob'a yüklenir.
 ========================================= */
 
 const grid = document.getElementById("gallery");
 const lightbox = document.getElementById("lightbox");
 const lightboxImg = document.getElementById("lightboxImg");
+const lightboxVideo = document.getElementById("lightboxVideo");
 const lightboxDownloadBtn = document.getElementById("lightboxDownload");
 const lightboxDeleteBtn = document.getElementById("lightboxDelete");
 const addBtn = document.getElementById("galleryAdd");
 const fileInput = document.getElementById("photoInput");
+const addVideoBtn = document.getElementById("galleryAddVideo");
+const videoInput = document.getElementById("videoInput");
 const statusEl = document.getElementById("galleryStatus");
 
 const LS_PHOTOS = "ezel_gallery_photos";
+const BLOB_CLIENT = "https://esm.sh/@vercel/blob@2.8.0/client";
+
+function isVideo(src) {
+    return /\.(mp4|mov|webm|m4v)(\?|#|$)/i.test(src);
+}
+
+// Karenin asıl adresi (video karelerinde küçük resim için #t eklenir).
+function srcOf(fig) {
+    return fig.dataset.src || fig.querySelector("img").src;
+}
+
+function flash(text, ms) {
+    statusEl.textContent = text;
+    setTimeout(() => {
+        if (statusEl.textContent === text) statusEl.textContent = "";
+    }, ms);
+}
 
 
 /* ---------- İndirme ---------- */
@@ -22,7 +43,7 @@ function filenameFromSrc(src) {
     try {
         const path = new URL(src, location.href).pathname;
         const name = path.split("/").pop();
-        if (name && /\.(jpe?g|png|webp)$/i.test(name)) return name;
+        if (name && /\.(jpe?g|png|webp|mp4|mov|webm|m4v)$/i.test(name)) return name;
     } catch (_) {
         // yoksay
     }
@@ -52,7 +73,7 @@ function makeDownloadBtn(getSrc) {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "dl-btn";
-    btn.setAttribute("aria-label", "Fotoğrafı indir");
+    btn.setAttribute("aria-label", "İndir");
     btn.textContent = "⬇";
     btn.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -83,31 +104,51 @@ function isDeletable(src) {
 }
 
 grid.addEventListener("click", (e) => {
-    const img = e.target.closest("img");
-    if (!img) return;
-    openFigure = img.closest("figure");
-    lightboxImg.src = img.src;
-    lightboxImg.alt = img.alt;
-    lightboxDeleteBtn.hidden = !isDeletable(img.src) || openFigure.classList.contains("pending");
+    const fig = e.target.closest("figure");
+    if (!fig || fig.classList.contains("pending")) return;
+    const src = srcOf(fig);
+    openFigure = fig;
+
+    if (isVideo(src)) {
+        lightboxImg.hidden = true;
+        lightboxVideo.hidden = false;
+        lightboxVideo.src = src;
+        lightboxVideo.play().catch(() => {});
+    } else {
+        lightboxVideo.hidden = true;
+        lightboxImg.hidden = false;
+        lightboxImg.src = src;
+        lightboxImg.alt = "Kare";
+    }
+    lightboxDeleteBtn.hidden = !isDeletable(src);
     lightbox.hidden = false;
 });
 
 function closeLightbox() {
     lightbox.hidden = true;
     lightboxImg.src = "";
+    lightboxVideo.pause();
+    lightboxVideo.removeAttribute("src");
+    lightboxVideo.load();
     openFigure = null;
 }
 
 lightbox.addEventListener("click", closeLightbox);
+// Video kontrollerine dokunmak lightbox'ı kapatmasın.
+lightboxVideo.addEventListener("click", (e) => e.stopPropagation());
 lightboxDownloadBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    downloadImage(lightboxImg.src, filenameFromSrc(lightboxImg.src));
+    if (!openFigure) return;
+    const src = srcOf(openFigure);
+    downloadImage(src, filenameFromSrc(src));
 });
 lightboxDeleteBtn.addEventListener("click", async (e) => {
     e.stopPropagation();
     const fig = openFigure;
-    const src = lightboxImg.src;
-    if (!fig || !confirm("Bu fotoğraf galeriden silinsin mi?")) return;
+    if (!fig) return;
+    const src = srcOf(fig);
+    const what = isVideo(src) ? "video" : "fotoğraf";
+    if (!confirm(`Bu ${what} galeriden silinsin mi?`)) return;
 
     lightboxDeleteBtn.disabled = true;
     try {
@@ -123,8 +164,7 @@ lightboxDeleteBtn.addEventListener("click", async (e) => {
         }
         fig.remove();
         closeLightbox();
-        statusEl.textContent = "Silindi ✓";
-        setTimeout(() => (statusEl.textContent = ""), 2500);
+        flash("Silindi ✓", 2500);
     } catch (_) {
         alert("Silinemedi, tekrar dene.");
     } finally {
@@ -136,7 +176,7 @@ document.addEventListener("keydown", (e) => {
 });
 
 
-/* ---------- Yüklenmiş fotoğrafları getir ---------- */
+/* ---------- Yüklenmiş fotoğraf/videoları getir ---------- */
 
 function readLocalPhotos() {
     try {
@@ -167,21 +207,46 @@ async function loadUploaded() {
     readLocalPhotos().forEach((src) => addFigure(src));
 }
 
-function addFigure(src, pending) {
+function setFigureSrc(fig, src) {
+    fig.dataset.src = src;
+    const video = fig.querySelector("video");
+    if (video) video.src = src + "#t=0.1";
+    else fig.querySelector("img").src = src;
+}
+
+function addFigure(src, pending, kind) {
     const fig = document.createElement("figure");
     if (pending) fig.className = "pending";
-    const img = document.createElement("img");
-    img.src = src;
-    img.alt = "Kare";
-    img.loading = "lazy";
-    fig.appendChild(img);
-    fig.appendChild(makeDownloadBtn(() => img.src));
+    fig.dataset.src = src;
+
+    if (kind === "video" || isVideo(src)) {
+        fig.classList.add("is-video");
+        const video = document.createElement("video");
+        video.muted = true;
+        video.playsInline = true;
+        video.preload = "metadata";
+        // #t: iPhone'da ilk kareyi küçük resim olarak göstersin.
+        video.src = pending ? src : src + "#t=0.1";
+        fig.appendChild(video);
+        const badge = document.createElement("span");
+        badge.className = "play-badge";
+        badge.textContent = "▶";
+        fig.appendChild(badge);
+    } else {
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = "Kare";
+        img.loading = "lazy";
+        fig.appendChild(img);
+    }
+
+    fig.appendChild(makeDownloadBtn(() => fig.dataset.src));
     grid.appendChild(fig);
     return fig;
 }
 
 
-/* ---------- Yükleme ---------- */
+/* ---------- Fotoğraf yükleme ---------- */
 
 function resizeImage(file, maxEdge = 1600, quality = 0.82) {
     return new Promise((resolve, reject) => {
@@ -241,9 +306,8 @@ fileInput.addEventListener("change", async () => {
         const out = await res.json().catch(() => ({}));
         if (res.ok && out.url) {
             fig.classList.remove("pending");
-            fig.querySelector("img").src = out.url;
-            statusEl.textContent = "Eklendi ✓";
-            setTimeout(() => (statusEl.textContent = ""), 2500);
+            setFigureSrc(fig, out.url);
+            flash("Eklendi ✓", 2500);
             return;
         }
     } catch (_) {
@@ -256,12 +320,67 @@ fileInput.addEventListener("change", async () => {
         arr.push(small);
         writeLocalPhotos(arr);
         fig.classList.remove("pending");
-        statusEl.textContent = "Bu cihaza kaydedildi.";
-        setTimeout(() => (statusEl.textContent = ""), 3000);
+        flash("Bu cihaza kaydedildi.", 3000);
     } catch (_) {
         fig.remove();
         statusEl.textContent =
             "Bu cihazın deposu dolu — daha fazla fotoğraf eklenemiyor.";
+    }
+});
+
+
+/* ---------- Video yükleme ---------- */
+
+const VIDEO_TYPES = {
+    "video/mp4": "mp4",
+    "video/quicktime": "mov",
+    "video/webm": "webm",
+    "video/x-m4v": "m4v",
+};
+
+addVideoBtn.addEventListener("click", () => videoInput.click());
+
+videoInput.addEventListener("change", async () => {
+    const file = videoInput.files && videoInput.files[0];
+    videoInput.value = "";
+    if (!file) return;
+
+    const nameExt = (file.name.split(".").pop() || "").toLowerCase();
+    const ext = VIDEO_TYPES[file.type] || (["mp4", "mov", "webm", "m4v"].includes(nameExt) ? nameExt : null);
+    if (!ext) {
+        statusEl.textContent = "Bu video biçimi desteklenmiyor (MP4, MOV veya WebM seç).";
+        return;
+    }
+    if (file.size > 300 * 1024 * 1024) {
+        statusEl.textContent = "Video çok büyük (300 MB sınırı).";
+        return;
+    }
+
+    const preview = URL.createObjectURL(file);
+    const fig = addFigure(preview, true, "video");
+    addVideoBtn.disabled = true;
+    statusEl.textContent = "Video yükleniyor… %0";
+
+    try {
+        const { upload } = await import(BLOB_CLIENT);
+        const blob = await upload(`gallery/video-${Date.now()}.${ext}`, file, {
+            access: "public",
+            handleUploadUrl: "/api/video-upload",
+            contentType: file.type || undefined,
+            multipart: file.size > 20 * 1024 * 1024,
+            onUploadProgress: ({ percentage }) => {
+                statusEl.textContent = `Video yükleniyor… %${Math.round(percentage)}`;
+            },
+        });
+        fig.classList.remove("pending");
+        setFigureSrc(fig, blob.url);
+        flash("Video eklendi ✓", 2500);
+    } catch (_) {
+        fig.remove();
+        statusEl.textContent = "Video yüklenemedi, internet bağlantını kontrol edip tekrar dene.";
+    } finally {
+        URL.revokeObjectURL(preview);
+        addVideoBtn.disabled = false;
     }
 });
 
