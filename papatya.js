@@ -18,7 +18,7 @@ yapraklar.forEach((yaprak) => {
 
         if (kalanYaprak === 0) {
             // Sonuç %10 ihtimalle SEVİYOR, %90 ihtimalle SEVMİYOR
-            const sonucSeviyor = Math.random() < 0.1;
+            const sonucSeviyor = Math.random() < 0.5;
             mesaj.innerHTML = sonucSeviyor
                 ? "<span style='color:#2e7d32'>Sonuç: SEVİYOR! ❤️</span>"
                 : "<span style='color:#c62828'>Sonuç: SEVMİYOR 💔</span>";
